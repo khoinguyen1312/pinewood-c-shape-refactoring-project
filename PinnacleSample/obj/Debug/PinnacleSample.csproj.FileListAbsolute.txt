@@ -1,0 +1,5 @@
+C:\Study\PinewoodInterviewQuestion\PinnacleSample\bin\Debug\PinnacleSample.dll
+C:\Study\PinewoodInterviewQuestion\PinnacleSample\bin\Debug\PinnacleSample.pdb
+C:\Study\PinewoodInterviewQuestion\PinnacleSample\obj\Debug\PinnacleSample.csprojResolveAssemblyReference.cache
+C:\Study\PinewoodInterviewQuestion\PinnacleSample\obj\Debug\PinnacleSample.dll
+C:\Study\PinewoodInterviewQuestion\PinnacleSample\obj\Debug\PinnacleSample.pdb
