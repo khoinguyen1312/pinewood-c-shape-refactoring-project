@@ -4,12 +4,15 @@
     {
         ICustomerRepositoryDB CustomerRepository;
         IPartInvoiceRepositoryDB PartInvoiceRepository;
+        IPartAvailabilityService PartAvailabilityService;
 
         public PartInvoiceController(ICustomerRepositoryDB _CustomerRepository,
-            IPartInvoiceRepositoryDB _PartInvoiceRepository)
+            IPartInvoiceRepositoryDB _PartInvoiceRepository,
+            IPartAvailabilityService _PartAvailabilityService)
         {
             CustomerRepository = _CustomerRepository;
             PartInvoiceRepository = _PartInvoiceRepository;
+            PartAvailabilityService = _PartAvailabilityService;
         }
 
         public CreatePartInvoiceResult CreatePartInvoice(
@@ -31,13 +34,11 @@
                 return new CreatePartInvoiceResult(false);
             }
 
-            using (PartAvailabilityServiceClient _PartAvailabilityService = new PartAvailabilityServiceClient())
+            
+            int _Availability = PartAvailabilityService.GetAvailability(stockCode);
+            if (_Availability <= 0)
             {
-                int _Availability = _PartAvailabilityService.GetAvailability(stockCode);
-                if (_Availability <= 0)
-                {
-                    return new CreatePartInvoiceResult(false);
-                }
+                return new CreatePartInvoiceResult(false);
             }
 
             PartInvoice _PartInvoice = new PartInvoice

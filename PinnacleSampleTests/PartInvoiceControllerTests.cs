@@ -13,12 +13,21 @@ namespace PinnacleSample.Tests
     public class PartInvoiceControllerTests
     {
         private static int QUANTITY = 2;
+        private static int AVAILABILITY = 1;
+        private static int CUSTOMER_ID = 1;
 
         private static string CUSTOMER_NAME = "John";
         private static string STOCK_CODE = "123";
 
+        private static Customer CUSTOMER = new Customer
+        {
+            ID = CUSTOMER_ID,
+            Name = CUSTOMER_NAME,
+            Address = "some where"
+        };
+
         private Mock<ICustomerRepositoryDB> _CustomerRepository;
-        private Mock<PartAvailabilityServiceClient> _PartAvailabilityService;
+        private Mock<IPartAvailabilityService> _PartAvailabilityService;
         private Mock<IPartInvoiceRepositoryDB> _PartInvoiceRepository;
 
         private PartInvoiceController controller;
@@ -27,12 +36,13 @@ namespace PinnacleSample.Tests
         public void TestInitialize()
         {
             _CustomerRepository = new Mock<ICustomerRepositoryDB>();
-            _PartAvailabilityService = new Mock<PartAvailabilityServiceClient>();
+            _PartAvailabilityService = new Mock<IPartAvailabilityService>();
             _PartInvoiceRepository = new Mock<IPartInvoiceRepositoryDB>();
 
            controller = new PartInvoiceController(
                     _CustomerRepository.Object,
-                    _PartInvoiceRepository.Object);
+                    _PartInvoiceRepository.Object,
+                    _PartAvailabilityService.Object);
         }
 
         [TestMethod()]
@@ -72,5 +82,40 @@ namespace PinnacleSample.Tests
             Assert.IsFalse(result.Success);
         }
 
+        [DataTestMethod]
+        [DataRow(0)]
+        [DataRow(-1)]
+        public void CreatePartInvoice_should_return_false_when_PartAvailabilityService_return_availability_smaller_than_zero(int _availability)
+        {
+            _CustomerRepository.Setup(repo => repo.GetByName(CUSTOMER_NAME)).Returns(CUSTOMER);
+            _PartAvailabilityService.Setup(service => service.GetAvailability(STOCK_CODE)).Returns(_availability);
+
+            CreatePartInvoiceResult result = controller.CreatePartInvoice(STOCK_CODE, QUANTITY, CUSTOMER_NAME);
+
+            Assert.IsFalse(result.Success);
+        }
+
+        [TestMethod()]
+        public void CreatePartInvoice_should_return_true_when_PartInvoiceRepository_add_successfully()
+        {
+            _CustomerRepository.Setup(repo => repo.GetByName(CUSTOMER_NAME)).Returns(CUSTOMER);
+            _PartAvailabilityService.Setup(service => service.GetAvailability(STOCK_CODE)).Returns(AVAILABILITY);
+
+            CreatePartInvoiceResult result = controller.CreatePartInvoice(STOCK_CODE, QUANTITY, CUSTOMER_NAME);
+
+            _PartInvoiceRepository
+                .Verify
+                (repo => 
+                    repo.Add
+                    (It.Is<PartInvoice>
+                        (part => 
+                            part.StockCode == STOCK_CODE
+                                && part.Quantity == QUANTITY
+                                && part.CustomerID == CUSTOMER_ID)
+                    )
+                );
+
+            Assert.IsTrue(result.Success);
+        }
     }
 }
