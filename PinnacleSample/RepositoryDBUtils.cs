@@ -8,6 +8,11 @@ namespace PinnacleSample
     {
         private static readonly string CONNECTION_STRING = "appDatabase";
 
+        private RepositoryDBUtils()
+        {
+
+        }
+
         public static SqlConnection GetSqlConnection()
         {
             string _ConnectionString = ConfigurationManager.ConnectionStrings[CONNECTION_STRING].ConnectionString;
