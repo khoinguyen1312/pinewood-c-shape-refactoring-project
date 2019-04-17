@@ -17,12 +17,7 @@
 
         public CreatePartInvoiceResult CreatePartInvoice(string stockCode, int quantity, string customerName)
         {
-            if (string.IsNullOrEmpty(stockCode))
-            {
-                return new CreatePartInvoiceResult(false);
-            }
-
-            if (quantity <= 0)
+            if (IsInValidRequest(stockCode, quantity))
             {
                 return new CreatePartInvoiceResult(false);
             }
@@ -33,22 +28,28 @@
                 return new CreatePartInvoiceResult(false);
             }
 
-            if (PartAvailabilityService.GetAvailability(stockCode) <= 0)
-            {
-                return new CreatePartInvoiceResult(false);
-            }
+            AddPartInvoiceToRepository(stockCode, quantity, _Customer.ID);
 
+            return new CreatePartInvoiceResult(true);
+        }
+
+        private bool IsInValidRequest(string stockCode, int quantity)
+        {
+            return quantity <= 0
+                || string.IsNullOrEmpty(stockCode)
+                || PartAvailabilityService.GetAvailability(stockCode) <= 0;
+        }
+
+        private void AddPartInvoiceToRepository(string stockCode, int quantity, int customerId)
+        {
             PartInvoice _PartInvoice = new PartInvoice
             {
                 StockCode = stockCode,
                 Quantity = quantity,
-                CustomerID = _Customer.ID
+                CustomerID = customerId
             };
 
-
             PartInvoiceRepository.Add(_PartInvoice);
-
-            return new CreatePartInvoiceResult(true);
         }
     }
 }
