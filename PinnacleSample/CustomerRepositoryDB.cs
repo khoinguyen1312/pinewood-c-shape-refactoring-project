@@ -15,9 +15,7 @@ namespace PinnacleSample
         {
             Customer _Customer = null;
 
-            string _ConnectionString = ConfigurationManager.ConnectionStrings["appDatabase"].ConnectionString;
-
-            using (SqlConnection _Connection = new SqlConnection(_ConnectionString))
+            using (SqlConnection _Connection = RepositoryDBUtils.GetSqlConnection())
             {
                 SqlCommand _Command = new SqlCommand
                 {

@@ -13,9 +13,7 @@ namespace PinnacleSample
     {
         public void Add(PartInvoice invoice)
         {
-            string _ConnectionString = ConfigurationManager.ConnectionStrings["appDatabase"].ConnectionString;
-
-            using (SqlConnection _Connection = new SqlConnection(_ConnectionString))
+            using (SqlConnection _Connection = RepositoryDBUtils.GetSqlConnection())
             {
                 SqlCommand _Command = new SqlCommand
                 {

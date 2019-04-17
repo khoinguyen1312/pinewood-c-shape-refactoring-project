@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="RepositoryDBUtils.cs" />
     <Compile Include="CreatePartInvoiceResult.cs" />
     <Compile Include="Customer.cs" />
     <Compile Include="CustomerRepositoryDB.cs" />
