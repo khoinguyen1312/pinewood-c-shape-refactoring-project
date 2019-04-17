@@ -4,7 +4,12 @@ using System.Data.SqlClient;
 
 namespace PinnacleSample
 {
-    public class PartInvoiceRepositoryDB
+    public interface IPartInvoiceRepositoryDB
+    {
+        void Add(PartInvoice invoice);
+    }
+
+    public class PartInvoiceRepositoryDB : IPartInvoiceRepositoryDB
     {
         public void Add(PartInvoice invoice)
         {

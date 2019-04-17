@@ -2,7 +2,21 @@
 {
     public class PartInvoiceController
     {
-        public CreatePartInvoiceResult CreatePartInvoice(string stockCode, int quantity, string customerName)
+        ICustomerRepositoryDB CustomerRepository;
+        PartAvailabilityServiceClient PartAvailabilityService;
+        IPartInvoiceRepositoryDB PartInvoiceRepository;
+
+        public PartInvoiceController(ICustomerRepositoryDB _CustomerRepository,
+            PartAvailabilityServiceClient _PartAvailabilityService,
+            IPartInvoiceRepositoryDB _PartInvoiceRepository)
+        {
+            CustomerRepository = _CustomerRepository;
+            PartAvailabilityService = _PartAvailabilityService;
+            PartInvoiceRepository = _PartInvoiceRepository;
+        }
+
+        public CreatePartInvoiceResult CreatePartInvoice(
+            string stockCode, int quantity, string customerName)
         {
             if (string.IsNullOrEmpty(stockCode))
             {
@@ -14,20 +28,16 @@
                 return new CreatePartInvoiceResult(false);
             }
 
-            CustomerRepositoryDB _CustomerRepository = new CustomerRepositoryDB();
-            Customer _Customer = _CustomerRepository.GetByName(customerName);
+            Customer _Customer = CustomerRepository.GetByName(customerName);
             if (_Customer.ID <= 0)
             {
                 return new CreatePartInvoiceResult(false);
             }
 
-            using (PartAvailabilityServiceClient _PartAvailabilityService = new PartAvailabilityServiceClient())
+            int _Availability = PartAvailabilityService.GetAvailability(stockCode);
+            if (_Availability <= 0)
             {
-                int _Availability = _PartAvailabilityService.GetAvailability(stockCode);
-                if (_Availability <= 0)
-                {
-                    return new CreatePartInvoiceResult(false);
-                }
+                return new CreatePartInvoiceResult(false);
             }
 
             PartInvoice _PartInvoice = new PartInvoice
@@ -38,8 +48,7 @@
             };
 
 
-            PartInvoiceRepositoryDB _PartInvoiceRepository = new PartInvoiceRepositoryDB();
-            _PartInvoiceRepository.Add(_PartInvoice);
+            PartInvoiceRepository.Add(_PartInvoice);
 
             return new CreatePartInvoiceResult(true);
         }

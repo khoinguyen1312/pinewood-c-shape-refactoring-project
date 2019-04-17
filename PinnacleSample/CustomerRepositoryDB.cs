@@ -4,7 +4,12 @@ using System.Data.SqlClient;
 
 namespace PinnacleSample
 {
-    public class CustomerRepositoryDB
+    public interface ICustomerRepositoryDB
+    {
+        Customer GetByName(string name);
+    }
+
+    public class CustomerRepositoryDB : ICustomerRepositoryDB
     {
         public Customer GetByName(string name)
         {
