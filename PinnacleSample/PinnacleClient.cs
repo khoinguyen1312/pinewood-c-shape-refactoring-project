@@ -2,7 +2,7 @@
 {
     public class PinnacleClient
     {
-        private PartInvoiceController __Controller;
+        private readonly PartInvoiceController __Controller;
 
         public PinnacleClient()
         {

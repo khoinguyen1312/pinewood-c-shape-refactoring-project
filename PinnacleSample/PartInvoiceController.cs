@@ -2,9 +2,9 @@
 {
     public class PartInvoiceController
     {
-        ICustomerRepositoryDB CustomerRepository;
-        IPartInvoiceRepositoryDB PartInvoiceRepository;
-        IPartAvailabilityService PartAvailabilityService;
+        private readonly ICustomerRepositoryDB CustomerRepository;
+        private readonly IPartInvoiceRepositoryDB PartInvoiceRepository;
+        private readonly IPartAvailabilityService PartAvailabilityService;
 
         public PartInvoiceController(ICustomerRepositoryDB _CustomerRepository,
             IPartInvoiceRepositoryDB _PartInvoiceRepository,
@@ -15,8 +15,7 @@
             PartAvailabilityService = _PartAvailabilityService;
         }
 
-        public CreatePartInvoiceResult CreatePartInvoice(
-            string stockCode, int quantity, string customerName)
+        public CreatePartInvoiceResult CreatePartInvoice(string stockCode, int quantity, string customerName)
         {
             if (string.IsNullOrEmpty(stockCode))
             {
@@ -34,9 +33,7 @@
                 return new CreatePartInvoiceResult(false);
             }
 
-            
-            int _Availability = PartAvailabilityService.GetAvailability(stockCode);
-            if (_Availability <= 0)
+            if (PartAvailabilityService.GetAvailability(stockCode) <= 0)
             {
                 return new CreatePartInvoiceResult(false);
             }
