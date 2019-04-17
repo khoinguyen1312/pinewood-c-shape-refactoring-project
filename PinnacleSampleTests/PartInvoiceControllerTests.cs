@@ -43,28 +43,24 @@ namespace PinnacleSample.Tests
             Assert.IsFalse(result.Success);
         }
 
-        [TestMethod()]
-        public void CreatePartInvoice_should_return_false_when_stock_code_not_null_but_quantity_is_smaller_zero()
+        [DataTestMethod]
+        [DataRow(0)]
+        [DataRow(-1)]
+        public void CreatePartInvoice_should_return_false_when_stock_code_not_null_but_quantity_is_smaller_or_equals_zero(int _quantity)
         {
-            CreatePartInvoiceResult result = controller.CreatePartInvoice(STOCK_CODE, -1, CUSTOMER_NAME);
+            CreatePartInvoiceResult result = controller.CreatePartInvoice(STOCK_CODE, _quantity, CUSTOMER_NAME);
 
             Assert.IsFalse(result.Success);
         }
 
-        [TestMethod()]
-        public void CreatePartInvoice_should_return_false_when_stock_code_not_null_but_quantity_is_equal_zero()
-        {
-            CreatePartInvoiceResult result = controller.CreatePartInvoice(STOCK_CODE, 0, CUSTOMER_NAME);
-
-            Assert.IsFalse(result.Success);
-        }
-
-        [TestMethod()]
-        public void CreatePartInvoice_should_return_false_when_customer_id_is_smaller_than_zero()
+        [DataTestMethod]
+        [DataRow(0)]
+        [DataRow(-1)]
+        public void CreatePartInvoice_should_return_false_when_customer_id_is_smaller_or_equal_than_zero(int _customerId)
         {
             Customer customer = new Customer
             {
-                ID = 0,
+                ID = _customerId,
                 Name = CUSTOMER_NAME,
                 Address = "some where"
             };
@@ -75,5 +71,6 @@ namespace PinnacleSample.Tests
 
             Assert.IsFalse(result.Success);
         }
+
     }
 }
