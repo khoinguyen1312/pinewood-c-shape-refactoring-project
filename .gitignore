@@ -1,0 +1,7 @@
+bin
+obj
+/PinnacleSampleTests/obj
+/PinnacleSampleTests/bin
+/.vs
+/PinnacleSample/obj
+/PinnacleSample/bin

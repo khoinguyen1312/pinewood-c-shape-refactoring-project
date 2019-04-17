@@ -32,7 +32,6 @@ namespace PinnacleSample.Tests
 
            controller = new PartInvoiceController(
                     _CustomerRepository.Object,
-                    _PartAvailabilityService.Object,
                     _PartInvoiceRepository.Object);
         }
 
